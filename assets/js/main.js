@@ -99,6 +99,18 @@ function initDateTimeDefaults() {
   }
 }
 
+function trackGoogleAdsConversion() {
+  if (typeof gtag === 'function') {
+    gtag('event', 'conversion', {
+      'send_to': 'AW-18418043186/L0TkCKKF3_4cELKStM5E'
+    });
+
+    console.log('Google Ads conversion fired');
+  } else {
+    console.warn('Google Ads gtag not loaded');
+  }
+}
+
 /**
  * Booking Form validation and WhatsApp message builder
  */
@@ -113,42 +125,81 @@ function initBookingForm() {
   pills.forEach(pill => {
     pill.addEventListener('click', () => {
       pills.forEach(p => p.classList.remove('active'));
+
       pill.classList.add('active');
+
       if (tripTypeInput) {
         tripTypeInput.value = pill.getAttribute('data-value');
       }
     });
   });
 
-  // Form Submit Handler
+  // Booking Form Submit
   form.addEventListener('submit', (e) => {
     e.preventDefault();
 
-    const name = document.getElementById('bookName')?.value.trim();
-    const phone = document.getElementById('bookPhone')?.value.trim();
-    const pickup = document.getElementById('bookPickup')?.value.trim();
-    const drop = document.getElementById('bookDrop')?.value.trim();
-    const date = document.getElementById('bookDate')?.value.trim();
-    const time = document.getElementById('bookTime')?.value.trim();
-    const tripType = document.getElementById('bookTripType')?.value || 'One Way';
-    const vehicle = document.getElementById('bookVehicle')?.value || 'Sedan (Dzire / Etios)';
-    const passengers = document.getElementById('bookPassengers')?.value || '1 - 4 Persons';
+    const name =
+      document.getElementById('bookName')?.value.trim();
 
-    // Basic Validation
+    const phone =
+      document.getElementById('bookPhone')?.value.trim();
+
+    const pickup =
+      document.getElementById('bookPickup')?.value.trim();
+
+    const drop =
+      document.getElementById('bookDrop')?.value.trim();
+
+    const date =
+      document.getElementById('bookDate')?.value.trim();
+
+    const time =
+      document.getElementById('bookTime')?.value.trim();
+
+    const tripType =
+      document.getElementById('bookTripType')?.value || 'One Way';
+
+    const vehicle =
+      document.getElementById('bookVehicle')?.value ||
+      'Sedan (Dzire / Etios)';
+
+    const passengers =
+      document.getElementById('bookPassengers')?.value ||
+      '1 - 4 Persons';
+
+
+    // ==========================================
+    // VALIDATION
+    // ==========================================
+
     if (!name || !phone || !pickup || !drop || !date || !time) {
-      showToast('Please fill in all required booking details.', 'warning');
+      showToast(
+        'Please fill in all required booking details.',
+        'warning'
+      );
+
       return;
     }
 
-    // Phone validation (numeric, min 10 digits)
+
+    // Phone validation
     const cleanPhone = phone.replace(/[^0-9]/g, '');
+
     if (cleanPhone.length < 10) {
-      showToast('Please enter a valid 10-digit mobile number.', 'warning');
+      showToast(
+        'Please enter a valid 10-digit mobile number.',
+        'warning'
+      );
+
       return;
     }
 
-    // Build WhatsApp message formatted as requested
-    const formattedMsg = 
+
+    // ==========================================
+    // WHATSAPP MESSAGE
+    // ==========================================
+
+    const formattedMsg =
 `Hello Sai Travel, I would like to book a taxi.
 
 Name: ${name}
@@ -161,16 +212,45 @@ Trip Type: ${tripType}
 Vehicle: ${vehicle}
 Passengers: ${passengers}`;
 
-    const waNumber = SAI_CONFIG?.company?.whatsapp || '9003981444';
-    const waUrl = `https://wa.me/91${waNumber}?text=${encodeURIComponent(formattedMsg)}`;
 
-    // Show toast confirmation
-    showToast('Redirecting to WhatsApp to complete your booking enquiry...', 'success');
+    const waNumber =
+      SAI_CONFIG?.company?.whatsapp || '9003981444';
 
-    // Open WhatsApp
+    const waUrl =
+      `https://wa.me/91${waNumber}?text=${encodeURIComponent(formattedMsg)}`;
+
+
+    // ==========================================
+    // GOOGLE ADS CONVERSION
+    // ==========================================
+
+    trackGoogleAdsConversion();
+
+
+    // ==========================================
+    // SUCCESS MESSAGE
+    // ==========================================
+
+    showToast(
+      'Redirecting to WhatsApp to complete your booking enquiry...',
+      'success'
+    );
+
+
+    // ==========================================
+    // OPEN WHATSAPP
+    // ==========================================
+
     setTimeout(() => {
-      window.open(waUrl, '_blank');
+
+      window.open(
+        waUrl,
+        '_blank',
+        'noopener,noreferrer'
+      );
+
     }, 400);
+
   });
 }
 
