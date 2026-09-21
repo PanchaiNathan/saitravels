@@ -58,17 +58,86 @@
   <!-- Custom Stylesheet -->
   <link rel="stylesheet" href="assets/css/style.css">
 <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18418043186">
-    </script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-    
-      gtag('config', 'AW-18418043186');
-    </script>
+   <!-- =========================================================
+     GOOGLE ADS TAG + CONVERSION TRACKING
+========================================================= -->
 
- <script> function gtag_report_conversion(url) { var callback = function () { if (typeof(url) != 'undefined') { window.location = url; } }; gtag('event', 'conversion', { 'send_to': 'AW-18418043186/L0TkCKKF3_4cELKStM5E', 'event_callback': callback }); return false; } </script>
+<!-- Google tag (gtag.js) -->
+<script async
+    src="https://www.googletagmanager.com/gtag/js?id=AW-18418043186">
+</script>
+
+<script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    // Google Ads account
+    gtag('config', 'AW-18418043186');
+
+
+    /**
+     * Google Ads Contact Conversion
+     *
+     * Call this ONLY when a real enquiry is submitted.
+     */
+    function trackGoogleAdsConversion() {
+
+        if (typeof gtag !== 'function') {
+            console.warn('Google Ads gtag is not available.');
+            return;
+        }
+
+        gtag('event', 'conversion', {
+            'send_to': 'AW-18418043186/L0TkCKKF3_4cELKStM5E'
+        });
+
+        console.log('Google Ads Contact conversion fired.');
+    }
+
+
+    /**
+     * Conversion + redirect version
+     *
+     * Use this when you want Google Ads to record
+     * the conversion before redirecting.
+     */
+    function gtag_report_conversion(url) {
+
+        let redirected = false;
+
+        function redirectUser() {
+
+            if (redirected) {
+                return;
+            }
+
+            redirected = true;
+
+            if (url) {
+                window.location.href = url;
+            }
+        }
+
+        gtag('event', 'conversion', {
+
+            'send_to':
+                'AW-18418043186/L0TkCKKF3_4cELKStM5E',
+
+            'event_callback': redirectUser
+
+        });
+
+        // Fallback in case Google callback is blocked
+        setTimeout(redirectUser, 1000);
+
+        return false;
+    }
+</script>
   <!-- Structured Data / JSON-LD: LocalBusiness (TaxiService) -->
   <script type="application/ld+json">
   {
